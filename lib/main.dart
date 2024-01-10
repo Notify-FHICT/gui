@@ -38,13 +38,19 @@ class _MyListState extends State<MyList> {
     _text = '';
     List<Meeting> events = _getDataSource();
     final DateTime today = DateTime.now();
+    String temp = '';
+
     for (var Meeting in events) {
-      // print(Meeting.from.day.toString() + " " + details.date!.day.toString());
+      print(Meeting.from.day.toString() + " " + details.date!.day.toString());
       if (Meeting.from.day == details.date!.day) {
-        _text += '\n';
-        _text += Meeting.eventName.toString();
+        temp += '\n';
+        temp += Meeting.eventName.toString();
+
       }
     }
+    setState((){
+      _text = temp;
+    });
   }
 
   @override
@@ -59,7 +65,7 @@ class _MyListState extends State<MyList> {
               width: constraints.maxHeight / 2,
               color: Colors.blue,
               child: Center(
-                child: MyInfoBox(title: 'Flutter Demo Home Page'),
+                child: MyInfoBox(text: _text, title: 'Flutter Demo Home Page'),
               ),
             ),
           ),
@@ -71,10 +77,9 @@ class _MyListState extends State<MyList> {
               child: Center(
                 child: MyCalendar(
                     selectionChanged: _selectionChanged,
-                    title: 'Flutter Demo Home Page'),
+                title: 'Flutter Demo Home Page'),
               ),
-            ),
-          ),
+            ),),
         ];
 
         if (aspectRatio > 1.0) {
@@ -89,21 +94,21 @@ class _MyListState extends State<MyList> {
   }
 }
 
-class MyInfoBox extends StatefulWidget {
-  const MyInfoBox({super.key, required this.title});
+class MyInfoBox extends StatelessWidget {
+  const MyInfoBox({required this.text, super.key, required this.title});
   final String title;
-  @override
-  State<MyInfoBox> createState() => _MyInfoBoxState();
-}
+  final String text;
+  //@override
+  //State<MyInfoBox> createState() => _MyInfoBoxState();
+//}
 
-class _MyInfoBoxState extends State<MyInfoBox> {
+//class _MyInfoBoxState extends State<MyInfoBox> {
+  //final String text;
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 200,
-      child: const Text(
-          textAlign: TextAlign.center,
-          'List, contains all items from selected day'),
+      child: Text(
+          textAlign: TextAlign.center, '$text' ),
     );
   }
 }
@@ -124,7 +129,7 @@ class MyCalendar extends StatelessWidget {
   final String title;
   // final CalendarTapCallback selectionChanged;
   // final CalendarSelectionDetails selectionChanged;
-  final CalendarSelectionChangedCallback? SelectionChanged;
+  final selectionChanged;
 
 //   @override
 //   State<MyCalendar> createState() => _MyCalendarState();
@@ -144,10 +149,7 @@ class MyCalendar extends StatelessWidget {
           CalendarView.month,
         ],
         // controller: _controller,
-        onSelectionChanged: (CalendarSelectionDetails details) {
-          DateTime date = details.date!;
-          CalendarResource resource = details.resource!;
-        },
+        onSelectionChanged: selectionChanged,
       ),
     );
   }
